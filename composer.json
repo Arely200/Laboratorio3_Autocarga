@@ -1,0 +1,1 @@
+{"name": "arely/autocarga-psr4","description": "Laboratorio de Autoload","autoload": {"psr-4": {"App\\": "src/"}}}
