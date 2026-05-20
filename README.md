@@ -35,23 +35,6 @@ Si hacemos una impresión sin el uso del composer el resultado nos dará el mism
 
 Se creó el archivo composer.json en la raíz del proyecto con el siguiente contenido:
 
-{
-    "name": "utp/autocarga-psr4",
-    "description": "Implementacion de PSR-4 Autoloading con Composer",
-    "autoload": {
-        "psr-4": {
-            "App\\": "src/App/",
-            "Database\\": "src/Database/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Arely Mendoza",
-            "email": "arely.mendoza@utp.ac.pa"
-        }
-    ]
-}
-
 ¿Qué hace este archivo específicamente?
 
 Le dice a Composer dónde está cada clase según su namespace. App\ la busca en src/App/ y Database\ en src/Database/. Sin esto, tendrías que usar require para cada archivo manualmente. Así obtendremos la impresión que queremos para este ejemplo.
@@ -82,8 +65,7 @@ Al ejecutarlo directamente, no nos saldrá la impresión pero al estructurarlo c
 
 Porque la sentencia use no carga el archivo, simplemente crea un alias corto dentro del archivo actual para no tener que escribir el namespace completo cada vez.
 
-![alt text](image-7.png)
-
+![alt text](image-11.png)
 ![alt text](image-8.png)
 ![alt text](image-9.png)
 ![alt text](image-10.png)
