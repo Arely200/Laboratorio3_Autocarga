@@ -16,17 +16,6 @@ A continuación se documenta el proceso seguido para construir este proyecto des
 ### Paso 1 — Crear el proyecto y las carpetas
 Se creó la carpeta raíz Autocarga/ y dentro de ella la estructura de directorios que respeta la jerarquía de namespaces definida por PSR-4:
 
-Autocarga/
-├── src/
-│   ├── App/
-│   │   └── User.php
-│   └── Database/
-│       └── Model/
-│           └── ProductModel.php
-├── .gitignore
-├── composer.json
-└── Prueba.php
-
 La lógica es directa: si la clase va a pertenecer al namespace Database\Model, debe vivir físicamente en la carpeta src/Database/Model/. PSR-4 exige que esta correspondencia sea exacta, carácter por carácter.
 
 ![alt text](image-1.png)
