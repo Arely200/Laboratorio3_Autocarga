@@ -1,60 +1,126 @@
-# LABORATORIO: IMPLEMENTACIÓN DE LA CARGA AUTOMÁTICA (AUTOLOAD) - PSR-4
+# Autocarga PSR-4 con Composer - Arely Mendoza
 
-**Estudiante:** Arely Mendoza  
-**Materia:** Desarrollo de Software VII  
-**Facultad:** FISC - UTP
+Esta guía demuestra la implementación del estándar PSR-4 usando Composer Autoload para gestionar la carga automática de clases en PHP, eliminando por completo el uso de require e include manuales.
 
----
+## Estructura del Proyecto con el estándar PSR-4
 
-Este proyecto demuestra la implementación exitosa de un mapa de **CARGA AUTOMÁTICA** utilizando **Composer** y el estándar **PSR-4**, eliminando el uso de `include` y `require` manuales para lograr una **REFACTORIZACIÓN** eficiente del código.
+Para el ejemplo propuesto, en base a la estructura PSR-4 creamos carpetas y subcarpetas que nos permitirán individualizar e identificar secciones del código para trabajar. La función del autoload en este laboratorio es simple: en vez de estar escribiendo require para cada archivo PHP que necesites usar, Composer se encarga de encontrar y cargar las clases automáticamente cuando las necesitas.
+![alt text](image.png)
 
-## GUÍA DE INSTALACIÓN
-Para que el proyecto funcione correctamente al clonarlo o descargarlo, se debe seguir este paso obligatorio:
+El estándar PSR-4 define una forma automatizada de cargar clases en PHP mediante un mapeo entre namespaces y directorios del sistema de archivos.
 
-1. Abrir la terminal en la carpeta raíz del proyecto (`C:\Users\arely\autocarga`).
-2. Ejecutar el siguiente comando para generar localmente la carpeta `vendor/` y el mapa de carga:
+## Flujo de Trabajo — Paso a Paso
 
-```bash
-composer dump-autoload
-ESTRUCTURA DE ARCHIVOS Y NAMESPACES
-Siguiendo el estándar PSR-4, se ha definido la siguiente relación lógico-física en el archivo composer.json:
+A continuación se documenta el proceso seguido para construir este proyecto desde cero, aplicando PSR-4.
 
-NAMESPACE PREFIJO: App\ (Nombre lógico para las clases).
+### Paso 1 — Crear el proyecto y las carpetas
+Se creó la carpeta raíz Autocarga/ y dentro de ella la estructura de directorios que respeta la jerarquía de namespaces definida por PSR-4:
 
-RUTA FÍSICA: src/ (Carpeta donde reside el código).
+Autocarga/
+├── src/
+│   ├── App/
+│   │   └── User.php
+│   └── Database/
+│       └── Model/
+│           └── ProductModel.php
+├── .gitignore
+├── composer.json
+└── Prueba.php
 
-MAPEO: La clase lógica App\Usuario está vinculada directamente al archivo físico src/Usuario.php.
+La lógica es directa: si la clase va a pertenecer al namespace Database\Model, debe vivir físicamente en la carpeta src/Database/Model/. PSR-4 exige que esta correspondencia sea exacta, carácter por carácter.
 
-PRUEBA DE EJECUCIÓN
-El sistema ha sido refactorizado satisfactoriamente. El archivo index.php actúa como punto de entrada y demuestra la instanciación de objetos sin errores:
+![alt text](image-1.png)
 
-PHP
-<?php
-// Carga del autoloader único
-require_once 'vendor/autoload.php';
+### Paso 2 — Crear las clases PHP
 
-// Importación de la clase mediante Namespace
-use App\Usuario;
+Cada archivo declara su namespace en la primera línea después de <?php. El namespace refleja exactamente la ruta de carpetas desde la raíz configurada.
 
-// Instanciación exitosa
-$user = new Usuario();
+Si hacemos una impresión sin el uso del composer el resultado nos dará el mismo, pero nos ralentiza el estar escribiendo require en cada clase para esperar una impresión, mejor utilicemos autoload instalándolo en la terminal, así nos agilizaremos un poco más.
 
-// Resultado esperado: ¡La clase Usuario se cargó automáticamente usando PSR-4!
-?>
-CONCLUSIONES TÉCNICAS
-MANTENIBILIDAD: La carga automática permite escalar el proyecto agregando nuevas clases en la carpeta src/ sin necesidad de modificar archivos de configuración globales o añadir múltiples sentencias include en cada script.
-
-EFICIENCIA DE MEMORIA: Mediante el mecanismo de LAZY LOADING, PHP solo carga en memoria los archivos de las clases en el momento exacto en que son instanciadas, optimizando el rendimiento del servidor.
-
-ESTANDARIZACIÓN: El cumplimiento del estándar PSR-4 garantiza la interoperabilidad del código y facilita el trabajo colaborativo, permitiendo que cualquier desarrollador comprenda la estructura del proyecto de forma inmediata.
+![alt text](image-2.png)
+![alt text](image-3.png)
 
 
----
 
-### ¿Cómo lo actualizas en GitHub?
+### Paso 3 — Configurar composer.json
 
-1.  En VS Code, abre el archivo `README.md`.
-2.  Borra todo y pega lo que te acabo de dar.
-3.  **Guarda el archivo** (`Ctrl + S`).
-4.  En la terminal de VS Code, escribe estos 3 comandos para subir el cambio:
+Se creó el archivo composer.json en la raíz del proyecto con el siguiente contenido:
 
+{
+    "name": "utp/autocarga-psr4",
+    "description": "Implementacion de PSR-4 Autoloading con Composer",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/App/",
+            "Database\\": "src/Database/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Arely Mendoza",
+            "email": "arely.mendoza@utp.ac.pa"
+        }
+    ]
+}
+
+¿Qué hace este archivo específicamente?
+
+Le dice a Composer dónde está cada clase según su namespace. App\ la busca en src/App/ y Database\ en src/Database/. Sin esto, tendrías que usar require para cada archivo manualmente. Así obtendremos la impresión que queremos para este ejemplo.
+
+![alt text](image-4.png)
+
+### Paso 4 — Ejecutar composer install
+
+composer install
+
+Este comando lee el bloque "autoload" del composer.json y genera automáticamente la carpeta vendor/ con todos los archivos internos necesarios para que PHP encuentre cada clase.
+
+¿Por qué se crea la carpeta vendor/?
+
+vendor/ es el directorio donde Composer almacena:
+- Las dependencias de terceros
+- El autoloader generado (vendor/autoload.php)
+
+![alt text](image-5.png)
+![alt text](image-6.png)
+
+
+### Paso 5 — Pruebas con mi archivo Prueba.php
+
+Al ejecutarlo directamente, no nos saldrá la impresión pero al estructurarlo como se mencionó anteriormente se reemplaza el require por el formato use. Después de ejecutarlo con la estructura correcta si nos saldrá la impresión.
+
+¿Por qué ya no hay require para cada clase?
+
+Porque la sentencia use no carga el archivo, simplemente crea un alias corto dentro del archivo actual para no tener que escribir el namespace completo cada vez.
+
+![alt text](image-7.png)
+
+![alt text](image-8.png)
+![alt text](image-9.png)
+![alt text](image-10.png)
+
+### Paso 6 — Creación del archivo gitignore
+
+Este último antes de subirlo a mi repositorio excluimos la carpeta vendor, ¿con qué finalidad? Demostrar que el composer.json está bien configurado si se llega a clonar un repositorio como prueba, si el proyecto funciona correctamente después de regenerar el vendor/ desde cero.
+
+## Conclusiones Técnicas
+
+### Mantenibilidad
+
+Agregar nuevas clases al proyecto no requiere modificar ningún archivo de configuración global. Basta con respetar la convención de carpetas y declarar el namespace correcto. El autoloader de Composer resuelve todo en tiempo de ejecución.
+
+### Eficiencia de Memoria — Lazy Loading
+
+Composer solo carga en memoria las clases que realmente se instancian durante una petición. En un proyecto con 200 clases donde una petición específica solo usa 15, las otras 185 nunca se cargan, reduciendo el consumo de RAM y mejorando el tiempo de respuesta del servidor.
+
+### Estandarización PSR-4
+
+Seguir PSR-4 garantiza una buena estructuración con el ecosistema PHP completo. Frameworks como Laravel siguen este mismo estándar. Esto permite integrar cualquier librería externa sin conflictos y facilita la incorporación de nuevos desarrolladores al equipo.
+
+## Información del Estudiante
+- Nombre: Arely Mendoza
+- Cédula: 20-36-7667
+- Correo: arely.mendoza@utp.ac.pa
+- Curso: Desarrollo de Software 7
+- Fecha de Ejecución del Laboratorio: 19-05-26
+- Instructor del Laboratorio: Irina Fong
